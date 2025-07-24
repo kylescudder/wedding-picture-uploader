@@ -15,17 +15,18 @@
   },
   "dependencies": {
     "@neondatabase/serverless": "1.0.1",
-    "@t3-oss/env-nextjs": "^0.13.8",
+    "@t3-oss/env-nextjs": "0.13.8",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "dotenv": "17.2.0",
     "drizzle-orm": "0.44.3",
     "lucide-react": "0.525.0",
     "next": "15.4.3",
+    "postgres": "3.4.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "3.3.1",
-    "zod": "^4.0.5"
+    "zod": "4.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.11",
