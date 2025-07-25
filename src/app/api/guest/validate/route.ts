@@ -6,7 +6,6 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const { forename } = await request.json()
-
     if (!forename) {
       return NextResponse.json(
         { error: 'Forename is required' },

@@ -11,10 +11,13 @@ export const guest = createTable('guest', {
 })
 export type Guest = typeof guest.$inferSelect
 
-export const image = createTable('image', {
+export const image = createTable('guest-image', {
   id: uuid('id')
     .primaryKey()
     .$defaultFn(() => uuidv4()),
-  key: varchar('key', { length: 256 }).notNull()
+  key: varchar('key', { length: 256 }).notNull(),
+  guestId: uuid('guestId')
+    .notNull()
+    .references(() => guest.id, { onDelete: 'cascade' })
 })
 export type Image = typeof image.$inferSelect
