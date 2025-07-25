@@ -1,6 +1,6 @@
 import { db } from '@/server/db'
 import { guest } from '@/server/db/schema'
-import { eq } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
 import { NextResponse } from 'next/server'
 
 export async function POST(request: Request) {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     const existingGuest = await db
       .select()
       .from(guest)
-      .where(eq(guest.forename, forename))
+      .where(sql`LOWER(${guest.forename}) = LOWER(${forename.trim()})`)
       .limit(1)
 
     if (!existingGuest.length) {
