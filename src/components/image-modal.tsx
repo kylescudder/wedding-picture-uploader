@@ -72,18 +72,18 @@ export function ImageModal({
       className='fixed inset-0 bg-black/80 z-50 flex items-center justify-center backdrop-blur-sm animate-in fade-in duration-300'
       onClick={handleBackdropClick}
     >
-      <div className="absolute top-4 right-4 flex gap-4 z-[60]">
+      <div className='absolute top-4 right-4 flex gap-4 z-[60]'>
         <button
           onClick={handleDownload}
           className='text-white/80 hover:text-white transition-all duration-200 hover:scale-110 animate-in fade-in slide-in-from-top-4'
-          title="Download image"
+          title='Download image'
         >
           <Download size={24} />
         </button>
         <button
           onClick={onClose}
           className='text-white/80 hover:text-white transition-all duration-200 hover:scale-110 animate-in fade-in slide-in-from-top-4'
-          title="Close"
+          title='Close'
         >
           <X size={24} />
         </button>

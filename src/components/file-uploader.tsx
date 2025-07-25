@@ -48,7 +48,8 @@ export default function FileUploader(): ReactNode {
         <div className='flex'>
           <div className='flex-grow'>
             <p className='text-sm text-yellow-700'>
-              Please note: All uploaded photos are visible to everyone. Only upload photos you are comfortable sharing with other guests.
+              Please note: All uploaded photos are visible to everyone. Only
+              upload photos you are comfortable sharing with other guests.
             </p>
           </div>
         </div>
