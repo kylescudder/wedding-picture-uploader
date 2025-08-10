@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
+import '../styles/globals.css'
 import { GuestProvider } from '@/context/guest'
 import AuthCheck from '@/components/auth-check'
 import { NextSSRPlugin } from '@uploadthing/react/next-ssr-plugin'
@@ -8,16 +7,10 @@ import { extractRouterConfig } from 'uploadthing/server'
 import { ourFileRouter } from '@/app/api/uploadthing/core'
 import { Toaster } from 'sonner'
 import { cn } from '@/lib/utils'
+import Header from '@/components/header'
+import localFont from 'next/font/local'
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin']
-})
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin']
-})
+const cooperBlack = localFont({ src: '../styles/fonts/COOPBL.woff' })
 
 export const metadata: Metadata = {
   title: 'Wedding Picture Uploader',
@@ -30,19 +23,15 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html
-      lang='en'
-      className={cn(
-        geistSans.variable,
-        geistMono.variable,
-        'antialiased font-sans'
-      )}
-    >
+    <html lang='en' className={cn(cooperBlack.className)}>
       <body>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <Toaster />
         <GuestProvider>
-          <AuthCheck>{children}</AuthCheck>
+          <AuthCheck>
+            <Header />
+            {children}
+          </AuthCheck>
         </GuestProvider>
       </body>
     </html>
