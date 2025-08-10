@@ -74,7 +74,12 @@ export default function Header() {
                 }}
                 appearance={{
                   button:
-                    'bg-primary !important bg-white/15 hover:bg-white/25 text-white px-4 sm:px-6 py-2.5 rounded-md font-medium whitespace-nowrap min-w-[160px] backdrop-blur'
+                    'bg-secondary! !important bg-white/15 hover:bg-white/25 text-white px-4 sm:px-6 py-2.5 rounded-full! font-medium whitespace-nowrap min-w-[160px] backdrop-blur',
+                  allowedContent: 'hidden'
+                }}
+                content={{
+                  button: 'upload',
+                  allowedContent: 'Only PNG, JPG, and GIF files are allowed'
                 }}
               />
             )}
