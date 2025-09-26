@@ -37,7 +37,7 @@
     "@types/node": "24",
     "@types/react": "19",
     "@types/react-dom": "19",
-    "drizzle-kit": "0.31.4",
+    "drizzle-kit": "0.31.5",
     "husky": "9.1.7",
     "prettier": "3.6.2",
     "tailwindcss": "^4.1.11",
