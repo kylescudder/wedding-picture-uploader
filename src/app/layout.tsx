@@ -24,6 +24,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en' className={cn(cooperBlack.className)}>
+      <head>
+        <link rel='icon' href='/favicon.ico' sizes='any' />
+        <title>Picture Uploader</title>
+      </head>
       <body>
         <NextSSRPlugin routerConfig={extractRouterConfig(ourFileRouter)} />
         <Toaster />
