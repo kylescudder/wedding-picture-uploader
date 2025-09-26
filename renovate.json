@@ -1,6 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "prHourlyLimit": 5,
-  "rebaseWhen": "always"
+  "prHourlyLimit": 5
 }
