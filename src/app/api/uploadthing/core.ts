@@ -1,3 +1,4 @@
+import { env } from '@/env'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
 import { z } from 'zod'
@@ -22,7 +23,8 @@ export const ourFileRouter = {
       const response = await fetch(`${baseUrl}/api/guest/validate`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'x-vercel-protection-bypass': env.VERCEL_AUTOMATION_BYPASS_SECRET
         },
         body: JSON.stringify({ forename: trimmedForename })
       })
