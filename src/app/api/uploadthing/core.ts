@@ -18,7 +18,8 @@ export const ourFileRouter = {
       const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
       const host = process.env.VERCEL_URL || 'localhost:3000'
       const baseUrl = `${protocol}://${host}`
-
+      console.log(baseUrl)
+      console.log(trimmedForename)
       const response = await fetch(`${baseUrl}/api/guest/validate`, {
         method: 'POST',
         headers: {
