@@ -113,7 +113,7 @@ export function ImageModal({
           className='max-h-[90vh] max-w-[90vw] object-contain select-none'
         />
         <div className='absolute bottom-4 left-4 bg-black/60 text-white px-3 py-2 rounded-md text-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-500 z-[60]'>
-          Uploaded by {currentImage.uploadedBy.toLowerCase()}
+          uploaded by {currentImage.uploadedBy.toLowerCase()}
         </div>
       </div>
     </div>
