@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { ImageModal } from './image-modal'
-import { toTitleCase } from '@/lib/utils'
 import type { ExtendedImage } from '@/types/image'
 
 interface ImageGridProps {
@@ -39,7 +38,7 @@ export function ImageGrid({ images, isLoading = false }: ImageGridProps) {
           >
             <img
               src={image.key}
-              alt={`Uploaded by ${toTitleCase(image.uploadedBy)}`}
+              alt={`uploaded by ${image.uploadedBy.toLowerCase()}`}
               className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
             />
           </button>

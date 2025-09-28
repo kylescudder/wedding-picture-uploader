@@ -39,7 +39,9 @@ export default function Header() {
                   try {
                     const response = await fetch('/api/images', {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
                       body: JSON.stringify({
                         images: imageUrls,
                         guestId: guest!.id
@@ -47,30 +49,35 @@ export default function Header() {
                     })
 
                     if (!response.ok) {
-                      throw new Error('Failed to save images')
+                      throw new Error('failed to save images')
                     }
 
                     const savedImages = await response.json()
+
+                    const imagesWithUploader = savedImages.map((img: any) => ({
+                      ...img,
+                      uploadedBy: guest!.forename
+                    }))
 
                     // Notify others (e.g., FileUploader) that new images are available
                     if (typeof window !== 'undefined') {
                       window.dispatchEvent(
                         new CustomEvent('images-updated', {
-                          detail: savedImages
+                          detail: imagesWithUploader
                         })
                       )
                     }
 
                     toast.success(
-                      `Successfully uploaded ${imageUrls.length} image${imageUrls.length === 1 ? '' : 's'}!`
+                      `successfully uploaded ${imageUrls.length} image${imageUrls.length === 1 ? '' : 's'}!`
                     )
                   } catch (error) {
-                    console.error('Error saving images:', error)
-                    toast.error('Failed to save images')
+                    console.error('error saving images:', error)
+                    toast.error('failed to save images')
                   }
                 }}
                 onUploadError={(error: Error) => {
-                  toast.error(`Upload failed: ${error.message}`)
+                  toast.error(`upload failed: ${error.message}`)
                 }}
                 appearance={{
                   button:
@@ -79,7 +86,7 @@ export default function Header() {
                 }}
                 content={{
                   button: 'upload',
-                  allowedContent: 'Only PNG, JPG, and GIF files are allowed'
+                  allowedContent: 'only png, jpg, and gif files are allowed'
                 }}
               />
             )}

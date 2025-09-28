@@ -12,11 +12,3 @@ export function uuidv4() {
     return v.toString(16)
   })
 }
-
-export function toTitleCase(str: string) {
-  return str
-    .toLowerCase()
-    .split(' ')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ')
-}
