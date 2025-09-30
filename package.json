@@ -14,7 +14,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@neondatabase/serverless": "1.0.1",
+    "@neondatabase/serverless": "1.0.2",
     "@t3-oss/env-nextjs": "0.13.8",
     "@uploadthing/react": "7.3.3",
     "class-variance-authority": "0.7.1",
