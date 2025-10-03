@@ -1,7 +1,9 @@
-import { env } from '@/env'
 import { createUploadthing, type FileRouter } from 'uploadthing/next'
 import { UploadThingError } from 'uploadthing/server'
 import { z } from 'zod'
+import { db } from '@/server/db'
+import { guest } from '@/server/db/schema'
+import { sql } from 'drizzle-orm'
 
 const f = createUploadthing()
 
@@ -16,25 +18,20 @@ export const ourFileRouter = {
     )
     .middleware(async ({ input }) => {
       const trimmedForename = input.forename.trim()
-      const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http'
-      const host = process.env.VERCEL_URL || 'localhost:3000'
-      const baseUrl = `${protocol}://${host}`
 
-      const response = await fetch(`${baseUrl}/api/guest/validate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-vercel-protection-bypass': env.VERCEL_AUTOMATION_BYPASS_SECRET
-        },
-        body: JSON.stringify({ forename: trimmedForename })
-      })
-      console.log(response)
-      if (!response.ok) {
-        throw new UploadThingError('Unauthorized')
+      const existingGuest = await db
+        .select()
+        .from(guest)
+        .where(sql`LOWER(${guest.forename}) = LOWER(${trimmedForename})`)
+        .limit(1)
+
+      if (!existingGuest.length) {
+        throw new UploadThingError(
+          'Guest not found. Please check the name and try again.'
+        )
       }
 
-      const guest = await response.json()
-      return { guestId: guest.id }
+      return { guestId: existingGuest[0].id }
     })
     .onUploadComplete(async ({ metadata, file }) => {
       console.log('Upload complete for guestId:', metadata.guestId)

@@ -8,7 +8,6 @@ export const env = createEnv({
    */
   server: {
     DATABASE_URL: z.string().url(),
-    VERCEL_AUTOMATION_BYPASS_SECRET: z.string(),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development')
@@ -29,8 +28,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     DATABASE_URL: process.env.DATABASE_URL,
-    VERCEL_AUTOMATION_BYPASS_SECRET:
-      process.env.VERCEL_AUTOMATION_BYPASS_SECRET,
     NEXT_PUBLIC_UT_APP_ID: process.env.NEXT_PUBLIC_UT_APP_ID,
     NODE_ENV: process.env.NODE_ENV
   },
