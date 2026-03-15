@@ -9,7 +9,7 @@ const f = createUploadthing()
 
 export const ourFileRouter = {
   imageUploader: f({
-    image: { maxFileSize: '4MB', maxFileCount: 1000 }
+    image: { maxFileSize: '50MB', maxFileCount: 1000 }
   })
     .input(
       z.object({
