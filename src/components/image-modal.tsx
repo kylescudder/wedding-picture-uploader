@@ -1,5 +1,3 @@
-'use client'
-
 import { useEffect, type MouseEvent } from 'react'
 import { ChevronLeft, ChevronRight, X, Download } from 'lucide-react'
 import type { ExtendedImage } from '@/types/image'
@@ -68,6 +66,9 @@ export function ImageModal({
 
   return (
     <div
+      role='dialog'
+      aria-modal='true'
+      aria-label='Wedding photo'
       className='fixed inset-0 bg-black/80 z-50 flex items-center justify-center backdrop-blur-sm animate-in fade-in duration-300'
       onClick={handleBackdropClick}
     >
@@ -91,6 +92,7 @@ export function ImageModal({
       {currentIndex > 0 && (
         <button
           onClick={handlePrevious}
+          aria-label='Previous image'
           className='absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 backdrop-blur-sm bg-black/40 rounded-full transition-all duration-200 hover:scale-110 hover:bg-black/60 animate-in fade-in slide-in-from-left-8 z-[60] cursor-pointer'
         >
           <ChevronLeft size={32} />
@@ -100,6 +102,7 @@ export function ImageModal({
       {currentIndex < images.length - 1 && (
         <button
           onClick={handleNext}
+          aria-label='Next image'
           className='absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 backdrop-blur-sm bg-black/40 rounded-full transition-all duration-200 hover:scale-110 hover:bg-black/60 animate-in fade-in slide-in-from-right-8 z-[60] cursor-pointer'
         >
           <ChevronRight size={32} />

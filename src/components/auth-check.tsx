@@ -1,5 +1,3 @@
-'use client'
-
 import { useGuest } from '@/context/guest'
 import Login from '@/components/login'
 import { type ReactNode } from 'react'

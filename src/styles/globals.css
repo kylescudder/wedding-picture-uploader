@@ -3,6 +3,16 @@
 @import 'uploadthing/tw/v4';
 @source "../../node_modules/@uploadthing/react/dist";
 
+@font-face {
+  font-family: 'Cooper Black';
+  src: url('./fonts/COOPBL.woff') format('woff');
+  font-display: swap;
+}
+
+html {
+  font-family: 'Cooper Black', Georgia, serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {

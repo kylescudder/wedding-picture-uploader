@@ -1,4 +1,4 @@
-import { createUploadthing, type FileRouter } from 'uploadthing/next'
+import { createUploadthing, type FileRouter } from 'uploadthing/server'
 import { UploadThingError } from 'uploadthing/server'
 import { z } from 'zod'
 import { db } from '@/server/db'
@@ -33,11 +33,7 @@ export const ourFileRouter = {
 
       return { guestId: existingGuest[0].id }
     })
-    .onUploadComplete(async ({ metadata, file }) => {
-      console.log('Upload complete for guestId:', metadata.guestId)
-
-      console.log('file url', file.url)
-
+    .onUploadComplete(async ({ metadata }) => {
       return { uploadedBy: metadata.guestId }
     })
 } satisfies FileRouter
