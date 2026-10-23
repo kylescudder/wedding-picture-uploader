@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { useGuest } from '@/context/guest'
 
@@ -50,6 +48,7 @@ export default function Login() {
           <div>
             <input
               id='forename'
+              aria-label='First name'
               type='text'
               value={forename}
               onChange={(e) => {
@@ -61,7 +60,11 @@ export default function Login() {
               placeholder='enter your first name'
               required
             />
-            {error && <p className='mt-2 text-sm text-destructive'>{error}</p>}
+            {error && (
+              <p role='alert' className='mt-2 text-sm text-destructive'>
+                {error}
+              </p>
+            )}
           </div>
           <button
             type='submit'

@@ -1,12 +1,32 @@
-'use client'
-
 import { UploadButton } from '@/utils/uploadthing'
 import { useGuest } from '@/context/guest'
-import Image from 'next/image'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { imagesQueryOptions } from '@/lib/images'
 import { toast } from 'sonner'
 
 export default function Header() {
   const { guest } = useGuest()
+  const queryClient = useQueryClient()
+  const saveImages = useMutation({
+    mutationFn: async (images: string[]) => {
+      const response = await fetch('/api/images', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ images, guestId: guest?.id })
+      })
+
+      if (!response.ok) throw new Error('failed to save images')
+    },
+    onSuccess: async (_, images) => {
+      await queryClient.invalidateQueries({
+        queryKey: imagesQueryOptions.queryKey
+      })
+      toast.success(
+        `successfully uploaded ${images.length} image${images.length === 1 ? '' : 's'}!`
+      )
+    },
+    onError: () => toast.error('failed to save images')
+  })
 
   // Only show header actions after guest is set
   const canUpload = Boolean(guest?.forename)
@@ -16,14 +36,14 @@ export default function Header() {
       {/* Header background and content */}
       <div className='bg-primary text-primary-foreground'>
         <div className='mx-auto max-w-5xl px-6 py-8 flex items-center justify-between gap-4'>
-          <Image
+          <img
             src='/logo.svg'
             alt='Logo'
             aria-hidden
             width={150}
             height={150}
             className='h-auto block'
-            priority
+            fetchPriority='high'
           />
 
           {/* Upload button aligned to the right */}
@@ -32,49 +52,12 @@ export default function Header() {
               <UploadButton
                 endpoint='imageUploader'
                 input={{ forename: guest!.forename }}
+                disabled={saveImages.isPending}
                 onClientUploadComplete={async (res) => {
-                  if (!res) return
-                  const imageUrls = res.map((file: { url: string }) => file.url)
-
-                  try {
-                    const response = await fetch('/api/images', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json'
-                      },
-                      body: JSON.stringify({
-                        images: imageUrls,
-                        guestId: guest!.id
-                      })
-                    })
-
-                    if (!response.ok) {
-                      throw new Error('failed to save images')
-                    }
-
-                    const savedImages = await response.json()
-
-                    const imagesWithUploader = savedImages.map((img: any) => ({
-                      ...img,
-                      uploadedBy: guest!.forename
-                    }))
-
-                    // Notify others (e.g., FileUploader) that new images are available
-                    if (typeof window !== 'undefined') {
-                      window.dispatchEvent(
-                        new CustomEvent('images-updated', {
-                          detail: imagesWithUploader
-                        })
-                      )
-                    }
-
-                    toast.success(
-                      `successfully uploaded ${imageUrls.length} image${imageUrls.length === 1 ? '' : 's'}!`
-                    )
-                  } catch (error) {
-                    console.error('error saving images:', error)
-                    toast.error('failed to save images')
-                  }
+                  if (!res?.length) return
+                  await saveImages
+                    .mutateAsync(res.map((file) => file.ufsUrl))
+                    .catch(() => undefined)
                 }}
                 onUploadError={(error: Error) => {
                   toast.error(`upload failed: ${error.message}`)
@@ -96,14 +79,14 @@ export default function Header() {
 
       {/* Wavy divider at the bottom of the header */}
       <div className='pointer-events-none relative -mb-1 select-none'>
-        <Image
+        <img
           src='/wave.svg'
           alt='Wave divider'
           aria-hidden
           width={1920}
           height={50}
           className='w-full h-auto block'
-          priority
+          fetchPriority='high'
         />
       </div>
     </header>

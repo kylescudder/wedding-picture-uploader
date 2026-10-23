@@ -1,0 +1,12 @@
+.git
+.env
+.env.*
+node_modules
+.next
+.tanstack
+.artifacts
+dist
+test-results
+playwright-report
+coverage
+.idea

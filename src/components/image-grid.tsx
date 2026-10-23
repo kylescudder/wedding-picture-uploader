@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { ImageModal } from './image-modal'
 import type { ExtendedImage } from '@/types/image'
