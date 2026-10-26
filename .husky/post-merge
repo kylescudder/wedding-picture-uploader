@@ -1,9 +1,0 @@
-#!/bin/bash
-
-# Check if there were changes to package.json or bun.lock
-if git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD | grep --quiet "^package.json\|^bun.lock"; then
-    echo "Changes to dependencies detected. Installing the locked dependencies..."
-    bun install --frozen-lockfile
-else
-    echo "No dependency changes detected."
-fi

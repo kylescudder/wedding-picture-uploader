@@ -6,7 +6,7 @@ Guests continue to enter their first name, which is matched against the existing
 
 ## Local development
 
-Use Bun **1.4.2**, matching `.bun-version`, CI, and the Dockerfile.
+Use Bun **1.4.4**, matching `.bun-version`, CI, and the Dockerfile.
 
 ```sh
 bun install --frozen-lockfile
@@ -54,6 +54,8 @@ bun run start
 
 The build does not require application secrets. At runtime, set `DATABASE_URL` and `UPLOADTHING_TOKEN`. The Bun server serves `dist/client` assets and the TanStack Start server bundle. `HOST` defaults to `0.0.0.0` and `PORT` defaults to `3000`.
 
+`GET /healthz` is answered by the Bun server before the app. It returns `{"ok":true,"revision":"<sha>"}` with `Cache-Control: no-store` once `SELECT id FROM guest LIMIT 0` succeeds, and `503 {"ok":false}` if the database doesn't answer within 3 seconds. Every response carries `X-Wedding-Picture-Uploader-Revision`, taken from `WEDDING_PICTURE_UPLOADER_REVISION` (a Docker build argument, defaulting to `development`). The image's `HEALTHCHECK` uses the same endpoint.
+
 For Docker:
 
 ```sh
@@ -66,8 +68,9 @@ Run database baselining/migrations once from a checkout with development depende
 ## Verification
 
 ```sh
-bun run check
+bun run typecheck
 bun run build
+bun run format:check
 ```
 
 Database and browser tests require an explicitly configured **disposable local database whose name ends in `_test`**. Migration tests reset its `public` and `drizzle` schemas. Never use a database containing real guest data. For example:
@@ -77,12 +80,12 @@ docker run --detach --rm --name wedding-uploader-tests \
   -e POSTGRES_HOST_AUTH_METHOD=trust -e POSTGRES_DB=wedding_test \
   -p 127.0.0.1:55463:5432 postgres:18.6-alpine
 export TEST_DATABASE_URL=postgresql://postgres@127.0.0.1:55463/wedding_test
-bun run test:db
+bun run test
 bunx --no-install playwright install chromium
 bun run test:e2e
 docker stop wedding-uploader-tests
 ```
 
-The database tests cover migration adoption, data preservation, and refusing schema drift. The Playwright suite builds and starts the production application on port 3190 and checks desktop and mobile layouts, guest login and persistence, gallery navigation, uploads, and failure paths against real PostgreSQL. It creates and removes only its own fixture guest and photos. The external UploadThing signing/storage boundary is stubbed, so these tests do not verify live UploadThing uploads or callback delivery; those require a configured UploadThing app and token.
+`bun run test` runs every non-browser test: migration adoption, data preservation, refusing schema drift, and the `/healthz` database probe. The Playwright suite builds and starts the production application on port 3190 and checks desktop and mobile layouts, guest login and persistence, gallery navigation, uploads, and failure paths against real PostgreSQL. It creates and removes only its own fixture guest and photos. The external UploadThing signing/storage boundary is stubbed, so these tests do not verify live UploadThing uploads or callback delivery; those require a configured UploadThing app and token.
 
-CI runs the same checks with Bun 1.4.2 and PostgreSQL. Browser reports are in `playwright-report/`; traces and screenshots are in `.artifacts/tanstack-migration/test-results/`.
+CI runs the same checks with Bun 1.4.4 and PostgreSQL. Browser reports are in `playwright-report/`; traces and screenshots are in `.artifacts/tanstack-migration/test-results/`.

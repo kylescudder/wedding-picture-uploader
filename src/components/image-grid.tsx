@@ -12,11 +12,11 @@ export function ImageGrid({ images, isLoading = false }: ImageGridProps) {
 
   if (isLoading) {
     return (
-      <div className='grid grid-cols-4 gap-4 mt-8'>
+      <div className='mt-8 grid grid-cols-4 gap-4'>
         {[...Array(8)].map((_, i) => (
           <div
             key={i}
-            className='aspect-square bg-gradient-to-r from-gray-200 to-gray-300 rounded-lg animate-in fade-in duration-700 ease-in-out'
+            className='aspect-square animate-in rounded-lg bg-gradient-to-r from-gray-200 to-gray-300 duration-700 ease-in-out fade-in'
           />
         ))}
       </div>
@@ -27,17 +27,17 @@ export function ImageGrid({ images, isLoading = false }: ImageGridProps) {
 
   return (
     <>
-      <div className='grid grid-cols-4 gap-4 mt-8'>
+      <div className='mt-8 grid grid-cols-4 gap-4'>
         {images.map((image) => (
           <button
             key={image.id}
             onClick={() => setSelectedImage(image)}
-            className='aspect-square relative overflow-hidden rounded-lg hover:opacity-95 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl group'
+            className='group relative aspect-square overflow-hidden rounded-lg transition-all duration-300 hover:scale-[1.02] hover:opacity-95 hover:shadow-xl'
           >
             <img
               src={image.key}
               alt={`uploaded by ${image.uploadedBy.toLowerCase()}`}
-              className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
+              className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
             />
           </button>
         ))}

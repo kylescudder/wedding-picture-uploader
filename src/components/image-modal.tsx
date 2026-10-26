@@ -69,20 +69,20 @@ export function ImageModal({
       role='dialog'
       aria-modal='true'
       aria-label='Wedding photo'
-      className='fixed inset-0 bg-black/80 z-50 flex items-center justify-center backdrop-blur-sm animate-in fade-in duration-300'
+      className='fixed inset-0 z-50 flex animate-in items-center justify-center bg-black/80 backdrop-blur-sm duration-300 fade-in'
       onClick={handleBackdropClick}
     >
-      <div className='absolute top-4 right-4 flex gap-4 z-[60]'>
+      <div className='absolute top-4 right-4 z-[60] flex gap-4'>
         <button
           onClick={handleDownload}
-          className='text-white/80 hover:text-white transition-all duration-200 hover:scale-110 animate-in fade-in slide-in-from-top-4 cursor-pointer'
+          className='animate-in cursor-pointer text-white/80 transition-all duration-200 fade-in slide-in-from-top-4 hover:scale-110 hover:text-white'
           title='Download image'
         >
           <Download size={24} />
         </button>
         <button
           onClick={onClose}
-          className='text-white/80 hover:text-white transition-all duration-200 hover:scale-110 animate-in fade-in slide-in-from-top-4 cursor-pointer'
+          className='animate-in cursor-pointer text-white/80 transition-all duration-200 fade-in slide-in-from-top-4 hover:scale-110 hover:text-white'
           title='Close'
         >
           <X size={24} />
@@ -93,7 +93,7 @@ export function ImageModal({
         <button
           onClick={handlePrevious}
           aria-label='Previous image'
-          className='absolute left-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 backdrop-blur-sm bg-black/40 rounded-full transition-all duration-200 hover:scale-110 hover:bg-black/60 animate-in fade-in slide-in-from-left-8 z-[60] cursor-pointer'
+          className='absolute top-1/2 left-4 z-[60] -translate-y-1/2 animate-in cursor-pointer rounded-full bg-black/40 p-3 text-white/80 backdrop-blur-sm transition-all duration-200 fade-in slide-in-from-left-8 hover:scale-110 hover:bg-black/60 hover:text-white'
         >
           <ChevronLeft size={32} />
         </button>
@@ -103,19 +103,19 @@ export function ImageModal({
         <button
           onClick={handleNext}
           aria-label='Next image'
-          className='absolute right-4 top-1/2 -translate-y-1/2 text-white/80 hover:text-white p-3 backdrop-blur-sm bg-black/40 rounded-full transition-all duration-200 hover:scale-110 hover:bg-black/60 animate-in fade-in slide-in-from-right-8 z-[60] cursor-pointer'
+          className='absolute top-1/2 right-4 z-[60] -translate-y-1/2 animate-in cursor-pointer rounded-full bg-black/40 p-3 text-white/80 backdrop-blur-sm transition-all duration-200 fade-in slide-in-from-right-8 hover:scale-110 hover:bg-black/60 hover:text-white'
         >
           <ChevronRight size={32} />
         </button>
       )}
 
-      <div className='relative max-h-[90vh] max-w-[90vw] animate-in zoom-in-50 duration-300'>
+      <div className='relative max-h-[90vh] max-w-[90vw] animate-in duration-300 zoom-in-50'>
         <img
           src={currentImage.key}
           alt={`Full size view, uploaded by ${currentImage.uploadedBy.toLowerCase()}`}
           className='max-h-[90vh] max-w-[90vw] object-contain select-none'
         />
-        <div className='absolute bottom-4 left-4 bg-black/60 text-white px-3 py-2 rounded-md text-sm backdrop-blur-sm animate-in fade-in slide-in-from-bottom-4 duration-500 z-[60]'>
+        <div className='absolute bottom-4 left-4 z-[60] animate-in rounded-md bg-black/60 px-3 py-2 text-sm text-white backdrop-blur-sm duration-500 fade-in slide-in-from-bottom-4'>
           uploaded by {currentImage.uploadedBy.toLowerCase()}
         </div>
       </div>
