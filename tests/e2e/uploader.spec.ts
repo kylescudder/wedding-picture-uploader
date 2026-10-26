@@ -269,3 +269,20 @@ test('server routes reject invalid inputs and expose the existing upload limits'
     }
   ])
 })
+
+test('healthz probes the database and every response carries the revision', async ({
+  request
+}) => {
+  const health = await request.get('/healthz')
+  expect(health.status()).toBe(200)
+  expect(health.headers()['cache-control']).toBe('no-store')
+  expect(health.headers()['x-wedding-picture-uploader-revision']).toBe(
+    'development'
+  )
+  expect(await health.json()).toEqual({ ok: true, revision: 'development' })
+
+  const home = await request.get('/')
+  expect(home.headers()['x-wedding-picture-uploader-revision']).toBe(
+    'development'
+  )
+})

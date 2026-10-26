@@ -35,14 +35,14 @@ export default function Header() {
     <header className='relative overflow-hidden'>
       {/* Header background and content */}
       <div className='bg-primary text-primary-foreground'>
-        <div className='mx-auto max-w-5xl px-6 py-8 flex items-center justify-between gap-4'>
+        <div className='mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-8'>
           <img
             src='/logo.svg'
             alt='Logo'
             aria-hidden
             width={150}
             height={150}
-            className='h-auto block'
+            className='block h-auto'
             fetchPriority='high'
           />
 
@@ -85,7 +85,7 @@ export default function Header() {
           aria-hidden
           width={1920}
           height={50}
-          className='w-full h-auto block'
+          className='block h-auto w-full'
           fetchPriority='high'
         />
       </div>

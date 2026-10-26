@@ -10,3 +10,4 @@ playwright-report
 bun.lock
 src/routeTree.gen.ts
 drizzle/meta
+.idea
