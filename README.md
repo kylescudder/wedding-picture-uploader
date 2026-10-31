@@ -54,6 +54,8 @@ bun run start
 
 The build does not require application secrets. At runtime, set `DATABASE_URL` and `UPLOADTHING_TOKEN`. The Bun server serves `dist/client` assets and the TanStack Start server bundle. `HOST` defaults to `0.0.0.0` and `PORT` defaults to `3000`.
 
+The shared Postgres.js application client allows at most **4 query connections per process**, retires idle connections after **20 seconds**, and bounds connection setup to **10 seconds**. Development reloads reuse the cached client. Health probes share a separate, short-lived **max-1** client with their existing 3-second deadline, so a saturated process plus a probe uses **5 database sessions**. Baseline and `db:migrate` use separate max-1 clients; run them with the appropriate owner credentials as before. Budget each overlapping application process separately (two saturated processes with probes can use 10 sessions), plus any owner/operational clients. This repository does not define the deployed role limits or rollout concurrency; this change does not increase either.
+
 `GET /healthz` is answered by the Bun server before the app. It returns `{"ok":true,"revision":"<sha>"}` with `Cache-Control: no-store` once `SELECT id FROM guest LIMIT 0` succeeds, and `503 {"ok":false}` if the database doesn't answer within 3 seconds. Every response carries `X-Wedding-Picture-Uploader-Revision`, taken from `WEDDING_PICTURE_UPLOADER_REVISION` (a Docker build argument, defaulting to `development`). The image's `HEALTHCHECK` uses the same endpoint.
 
 For Docker:
@@ -86,6 +88,6 @@ bun run test:e2e
 docker stop wedding-uploader-tests
 ```
 
-`bun run test` runs every non-browser test: migration adoption, data preservation, refusing schema drift, and the `/healthz` database probe. The Playwright suite builds and starts the production application on port 3190 and checks desktop and mobile layouts, guest login and persistence, gallery navigation, uploads, and failure paths against real PostgreSQL. It creates and removes only its own fixture guest and photos. The external UploadThing signing/storage boundary is stubbed, so these tests do not verify live UploadThing uploads or callback delivery; those require a configured UploadThing app and token.
+`bun run test` runs every non-browser test: migration adoption, data preservation, refusing schema drift, the `/healthz` database probe, and application connection limits/reuse/idle retirement. The connection tests load the actual exported Drizzle client and count its sessions in PostgreSQL under concurrent query and health load; the max-1 test observer is excluded from the app budget. The Playwright suite builds and starts the production application on port 3190 and checks desktop and mobile layouts, guest login and persistence, gallery navigation, uploads, and failure paths against real PostgreSQL. It creates and removes only its own fixture guest and photos. The external UploadThing signing/storage boundary is stubbed, so these tests do not verify live UploadThing uploads or callback delivery; those require a configured UploadThing app and token.
 
 CI runs the same checks with Bun 1.4.4 and PostgreSQL. Browser reports are in `playwright-report/`; traces and screenshots are in `.artifacts/tanstack-migration/test-results/`.
