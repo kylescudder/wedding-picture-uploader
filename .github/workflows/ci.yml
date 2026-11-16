@@ -44,6 +44,11 @@ jobs:
           bun run build
           bun run test
           bun run format:check
+      # The unit tests leave the database empty, and /healthz needs the schema.
+      - name: Migrate the database for the production image
+        run: bun run db:migrate
+        env:
+          DATABASE_URL: ${{ env.TEST_DATABASE_URL }}
       - name: Build and start production image
         run: |
           docker build -t wedding-picture-uploader:ci --build-arg WEDDING_PICTURE_UPLOADER_REVISION="$GITHUB_SHA" .
@@ -56,8 +61,10 @@ jobs:
             [ "$(docker inspect -f '{{.State.Health.Status}}' wedding-picture-uploader-ci)" = healthy ] && break
             sleep 2
           done
-          curl --fail --silent --show-error --dump-header - http://127.0.0.1:3000/healthz \
-            | tee /dev/stderr | grep -qi "^x-wedding-picture-uploader-revision: $GITHUB_SHA"
+          # Capture first so a non-2xx response fails the step instead of vanishing in a pipe.
+          response=$(curl --fail --silent --show-error --dump-header - http://127.0.0.1:3000/healthz)
+          printf '%s\n' "$response"
+          grep -qi "^x-wedding-picture-uploader-revision: $GITHUB_SHA" <<<"$response"
 
   e2e:
     name: E2E tests
