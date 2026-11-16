@@ -3,6 +3,7 @@ import postgres from 'postgres'
 
 const sql = postgres(process.env.TEST_DATABASE_URL!, {
   max: 1,
+  connect_timeout: 2,
   onnotice: () => {}
 })
 const guestId = '00000000-0000-4000-8000-000000000101'

@@ -17,7 +17,11 @@ if (
     'Health tests require a disposable local database ending in _test'
   )
 }
-const sql = postgres(databaseUrl, { max: 2, onnotice: () => {} })
+const sql = postgres(databaseUrl, {
+  max: 2,
+  connect_timeout: 2,
+  onnotice: () => {}
+})
 
 let createdGuestTable = false
 

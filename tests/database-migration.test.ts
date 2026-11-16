@@ -15,7 +15,11 @@ if (
     'Database migration tests require a disposable local database ending in _test'
   )
 }
-const sql = postgres(databaseUrl, { max: 1, onnotice: () => {} })
+const sql = postgres(databaseUrl, {
+  max: 1,
+  connect_timeout: 2,
+  onnotice: () => {}
+})
 
 async function runScript(script: string) {
   const child = Bun.spawn(['bun', 'run', script], {
