@@ -3,7 +3,11 @@ import postgres from 'postgres'
 import { z } from 'zod'
 
 const databaseUrl = z.url().parse(process.env.DATABASE_URL)
-const sql = postgres(databaseUrl, { max: 1, onnotice: () => {} })
+const sql = postgres(databaseUrl, {
+  max: 1,
+  connect_timeout: 2,
+  onnotice: () => {}
+})
 const [initialMigration] = readMigrationFiles({
   migrationsFolder: new URL('../drizzle', import.meta.url).pathname
 })

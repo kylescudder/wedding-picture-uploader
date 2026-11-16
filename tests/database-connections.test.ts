@@ -17,16 +17,24 @@ if (
 
 const applicationName = `wedding-pool-test-${process.pid}`
 target.searchParams.set('application_name', applicationName)
-const observer = postgres(databaseUrl, { max: 1, onnotice: () => {} })
+const observer = postgres(databaseUrl, {
+  max: 1,
+  connect_timeout: 2,
+  onnotice: () => {}
+})
 let db: (typeof import('../src/server/db'))['db']
 let createdGuestTable = false
 
-async function importDatabase(path: string) {
+async function importDatabase(
+  path: string,
+  url = target.href,
+  mode = 'development'
+) {
   const originalUrl = process.env.DATABASE_URL
   const originalMode = process.env.NODE_ENV
   try {
-    process.env.DATABASE_URL = target.href
-    process.env.NODE_ENV = 'development'
+    process.env.DATABASE_URL = url
+    process.env.NODE_ENV = mode
     return (await import(path)) as typeof import('../src/server/db')
   } finally {
     if (originalUrl === undefined) delete process.env.DATABASE_URL
@@ -53,7 +61,7 @@ test('development reloads reuse the application client', async () => {
 })
 
 test('the application client bounds connection setup and retires idle sessions', async () => {
-  expect(db.$client.options.connect_timeout).toBe(10)
+  expect(db.$client.options.connect_timeout).toBe(2)
   expect(db.$client.options.idle_timeout).toBe(20)
   await db.execute(sql`SELECT 1`)
   const countSessions = async () => {
@@ -126,3 +134,45 @@ test('concurrent application queries and health probes use four plus one session
     await Promise.allSettled([queries, probes])
   }
 })
+
+test('the application client fails fast when the role connection limit refuses it', async () => {
+  const role = `wedding_limit_test_${process.pid}`
+  await observer`CREATE ROLE ${observer(role)} LOGIN CONNECTION LIMIT 1`
+  const limitedUrl = new URL(target)
+  limitedUrl.username = role
+  limitedUrl.password = ''
+  // Hold the role's only connection so the application client is refused.
+  const holder = postgres(limitedUrl.href, {
+    max: 1,
+    connect_timeout: 2,
+    onnotice: () => {}
+  })
+  const cached = Reflect.get(globalThis, 'conn')
+  Reflect.deleteProperty(globalThis, 'conn')
+  let refused: (typeof import('../src/server/db'))['db'] | undefined
+  try {
+    await holder`SELECT 1`
+    // Production mode leaves the shared development client cached for the other tests.
+    ;({ db: refused } = await importDatabase(
+      '../src/server/db/index.ts?connection-limit',
+      limitedUrl.href,
+      'production'
+    ))
+    const started = performance.now()
+    const error = await refused.execute(sql`SELECT 1`).then(
+      () => undefined,
+      (failure: unknown) => failure
+    )
+    const elapsed = performance.now() - started
+    // Drizzle wraps the driver error, so read the code from its cause.
+    const failure = error as { code?: string; cause?: { code?: string } }
+    expect(failure?.cause?.code ?? failure?.code).toBe('53300')
+    // postgres.js v4 retries 53300 until connect_timeout (2 s) has passed.
+    expect(elapsed).toBeLessThan(5000)
+  } finally {
+    await refused?.$client.end({ timeout: 0 })
+    Reflect.set(globalThis, 'conn', cached)
+    await holder.end({ timeout: 0 })
+    await observer`DROP ROLE ${observer(role)}`
+  }
+}, 15_000)
