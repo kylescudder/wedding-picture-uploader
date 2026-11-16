@@ -8,7 +8,7 @@
     "start": "NODE_ENV=production bun scripts/serve.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test ./tests/*.test.ts",
-    "test:e2e": "bun --bun playwright test",
+    "test:e2e": "bun e2e/run.ts",
     "db:generate": "bun --bun drizzle-kit generate",
     "db:migrate": "bun --bun drizzle-kit migrate",
     "db:studio": "bun --bun drizzle-kit studio",
